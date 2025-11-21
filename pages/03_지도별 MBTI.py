@@ -13,7 +13,7 @@ import base64
 # ---------------------------
 # 설정
 # ---------------------------
-CSV_PATH = "/mnt/data/countriesMBTI_16types.csv"  # 업로드된 CSV 경로 (변경 불필요)
+CSV_PATH = "countriesMBTI_16types.csv"  # 업로드된 CSV 경로 (변경 불필요)
 GEOJSON_URL = "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson"
 # ---------------------------
 
