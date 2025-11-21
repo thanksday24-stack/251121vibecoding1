@@ -97,21 +97,33 @@ def tooltip_function(feature):
     else:
         return f"{name}: {selected_mbti_for_choropleth} 비율 {val:.3f}"
 
-# GeoJson 추가 (클릭 이벤트는 Streamlit에서 selectbox로 처리)
 gj = GeoJson(
     geojson,
     name="countries",
     style_function=style_function,
-    tooltip=folium.GeoJsonTooltip(fields=["ADMIN", "NAME", "name"], aliases=["ADMIN","NAME","name"], labels=False, sticky=False),
 )
-# 각 feature에 tooltip text를 대체로 설정 (fallback)
+
+# 각 feature에 안전한 tooltip 추가
 for feature in gj.data["features"]:
     props = feature.get("properties", {})
-    # set a popup/tooltip string into properties for display
-    props["__tooltip__"] = tooltip_function(feature)
+    name = (
+        props.get("ADMIN") or
+        props.get("NAME") or
+        props.get("name") or
+        "Unknown"
+    )
+    val = value_map.get(name, None)
+    if val is None:
+        tooltip_text = f"{name}: 데이터 없음"
+    else:
+        tooltip_text = f"{name}: {selected_mbti_for_choropleth} 비율 {val:.3f}"
 
-# GeoJson에 추가
+    folium.Tooltip(tooltip_text).add_to(folium.GeoJson(feature))
+
 gj.add_to(m)
+
+
+
 
 # 지도 표시
 st.subheader("인터랙티브 세계지도 (지도 클릭 → 사이드바에서 국가 선택으로 상세 보기)")
